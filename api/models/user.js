@@ -57,11 +57,8 @@ module.exports = (sequelize, DataTypes) => {
         notNull: {
           msg: 'An email address is required.'
         },
-        notEmpty: {
-          msg: 'Please provide an email address.'
-        },
         isEmail: {
-          msg: 'Please provide a valid email address'
+          msg: 'Please provide a valid email address.'
         }
       }
     },
@@ -69,6 +66,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
+        // len: {
+        //   args: [1, 20],
+        //   msg: "Please provide a password between 8 and 20 characters long."
+        // },
         notNull: {
           msg: 'A password is required.'
         },
@@ -83,7 +84,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    timestamps: false,
     modelName: 'User',
   });
   return User;

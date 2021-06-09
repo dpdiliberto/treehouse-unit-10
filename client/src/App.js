@@ -1,31 +1,52 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios';
+import React from 'react';
+import { 
+  BrowserRouter,
+  Route,
+  Redirect,
+  Switch,
+  useHistory
+} from 'react-router-dom';
+
+import Header from './Components/Header';
+import CourseList from './Components/CourseList';
+import CourseDetail from './Components/CourseDetail';
+import CreateCourse from './Components/CreateCourse';
+import UpdateCourse from './Components/UpdateCourse';
+import UserSignUp from './Components/UserSignUp';
+import UserSignIn from './Components/UserSignIn';
+import UserSignOut from './Components/UserSignOut';
+import Error from './Components/Error';
+import NotFound from './Components/NotFound';
+
+import PrivateRoute from './PrivateRoute';
+
 
 function App() {
 
-  const [data, setData] = useState([]);
+  let history = useHistory();
 
-  useEffect(() => {
-    axios('http://localhost:5000/api/courses')
-      .then(response => console.log(response.data))
-  });
+  const handleCancel = (e) => {
+    e.preventDefault();
+    history.push('/courses');
+  }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter> 
+      <Header />
+      <Switch>
+        <Route exact path='/'><Redirect to='/courses'/></Route>
+        <Route exact path='/courses' render={() => <CourseList/>}/>
+        <Route path='/signup' component={UserSignUp} />
+        <Route path='/signin' render={() => <UserSignIn handleCancel={handleCancel}/>} />
+        <Route path='/signout' component={UserSignOut} />
+        <PrivateRoute exact path='/courses/create' component={CreateCourse} />
+        <Route exact path='/courses/:id' component={CourseDetail} />
+        <PrivateRoute path='/courses/:id/update' component={UpdateCourse} />
+        <Route path='/error' component={Error} />
+        <Route path='/notfound' component={NotFound} />
+        <Route path={'/'} component={NotFound} />
+      </Switch>
+    </BrowserRouter>
   );
 }
 
