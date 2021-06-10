@@ -20,24 +20,17 @@ import NotFound from './Components/NotFound';
 
 import PrivateRoute from './PrivateRoute';
 
-
 function App() {
 
-  let history = useHistory();
-
-  const handleCancel = (e) => {
-    e.preventDefault();
-    history.push('/courses');
-  }
-
+  // Build routes to direct user to appropriate component
   return (
     <BrowserRouter> 
       <Header />
       <Switch>
         <Route exact path='/'><Redirect to='/courses'/></Route>
-        <Route exact path='/courses' render={() => <CourseList/>}/>
+        <Route exact path='/courses' component={CourseList}/>
         <Route path='/signup' component={UserSignUp} />
-        <Route path='/signin' render={() => <UserSignIn handleCancel={handleCancel}/>} />
+        <Route path='/signin' component={UserSignIn} />
         <Route path='/signout' component={UserSignOut} />
         <PrivateRoute exact path='/courses/create' component={CreateCourse} />
         <Route exact path='/courses/:id' component={CourseDetail} />

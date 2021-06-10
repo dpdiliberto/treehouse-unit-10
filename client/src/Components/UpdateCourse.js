@@ -1,15 +1,17 @@
 import React, { useState, useContext } from 'react';
 
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import Context from '../Context';
 import ValidationErrors from './ValidationErrors';
 
 export default function UpdateCourse ({match, location}) {
+    // Instantiate context and history objects
     const context = useContext(Context.Context);
     const history = useHistory();
     let id = match.params.id;
     
+    // Instantiate state for form elements and for errors. Set form elements to corresponding courseData value
     let courseData = location.state.courseData;
     const [title, setTitle] = useState(courseData.title);
     const [description, setDescription] = useState(courseData.description);
@@ -17,6 +19,7 @@ export default function UpdateCourse ({match, location}) {
     const [materials, setMaterials] = useState(courseData.materialsNeeded);
     const [errors, setErrors] = useState([]);
 
+    // Function to handle form text updates
     const change = (event) => {
         const value = event.target.value;
         if (event.target.name === 'courseTitle') {
@@ -30,6 +33,9 @@ export default function UpdateCourse ({match, location}) {
         }
     }
 
+    // Function to handle form submission
+    // Updates a course or provides validation errors depending on the inputs
+    // Links back to Courses homepage if successful
     const submit = (e) => {
         e.preventDefault();
         const body = {
@@ -62,9 +68,10 @@ export default function UpdateCourse ({match, location}) {
             })
     }
 
+    // Function when "Cancel" button is clicked to return user to homepage
     const cancel = (e) => {
         e.preventDefault();
-        history.push('/courses');
+        history.push(`/courses/${id}`);
     }
 
     return (
@@ -92,9 +99,7 @@ export default function UpdateCourse ({match, location}) {
                     </div>
                 </div>
                 <button className="button" type="submit">Update Course</button>
-                <Link to={`/courses/${id}`}>
-                    <button className="button button-secondary" onClick={cancel}>Cancel</button>
-                </Link>
+                <button className="button button-secondary" onClick={cancel}>Cancel</button>
             </form>
         </div>
     </main>

@@ -67,6 +67,7 @@ header nav a:hover {
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     display: block;
+    height: 90%;
 }
 .course--label {
     color: #fff;

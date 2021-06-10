@@ -6,6 +6,8 @@ const Context = React.createContext();
 
 export class Provider extends Component {
 
+    // Instantiate authenticatedUser and authenticatedPassword state to pull from cookies
+    // If a cookie does not exist with these values, then set state to null
     state = {
         authenticatedUser: Cookies.getJSON('authenticatedUser') || null,
         authenticatedPassword: Cookies.getJSON('authenticatedPassword') || null
@@ -37,6 +39,8 @@ export class Provider extends Component {
         );
     }
 
+    // Function to sign a user in and sets user as a cookie
+    // Requires a username and password parameter
     signIn = async (username, password) => {
         const user = await this.apiHandler.getUser(username, password);
         const encodedPassword = btoa(password);
@@ -54,12 +58,14 @@ export class Provider extends Component {
         return user;
     }
 
+    // Function to sign a user out and remove corresponding cookies
     signOut = () => {
         this.setState({ authenticatedUser: null, authenticatedPassword: null });
         Cookies.remove('authenticatedUser');
         Cookies.remove('authenticatedPassword');
     }
 
+    // Function to return validation error elements if validation errors exist
     validationErrorCheck = (validationErrors) => {
         if (validationErrors.length > 0) {
             return (

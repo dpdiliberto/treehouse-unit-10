@@ -2,8 +2,9 @@ import React, { useContext, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Context from '../Context';
 
-export default function UserSignUp (props) {
+export default function UserSignUp () {
 
+    // Instantiate context and history objects
     const context = useContext(Context.Context);
     let history = useHistory();
 
@@ -51,21 +52,11 @@ export default function UserSignUp (props) {
         history.push('/courses');
     }
 
-    const validationErrorCheck = (validationErrors) => {
-        if (validationErrors.length > 0) {
-            return (
-                <div className="validation--errors">
-                    <div style={{color:'#800'}}>{validationErrors}</div>
-                </div>
-            )
-        }
-    }
-
     return (
         <main>
             <div className="form--centered">
                 <h2>Sign In</h2>
-                {validationErrorCheck(errors)}
+                {context.actions.validationErrorCheck(errors)}
                 <form onSubmit={submit}>
                     <label htmlFor="emailAddress">Email Address</label>
                     <input id="emailAddress" name="emailAddress" type="email" value={emailAddress} onChange={change}/>

@@ -3,16 +3,21 @@ import { Link, Redirect } from 'react-router-dom';
 import Context from '../Context';
 
 export default function Header () {
+    // Instantiate context object
     const context = useContext(Context.Context);
+
+    // Determine authenticated user's first name to greet in the header
     let firstName;
     if (context.authenticatedUser) {
         firstName = context.authenticatedUser.firstName;
     }
 
+    // Function to sign user out and redirect them to homepage
     const signOut = () => {
         context.actions.signOut();
         return (<Redirect to="/courses" />)
-      }
+    }
+    
     return (
         <header>
             <div className="wrap header--flex">

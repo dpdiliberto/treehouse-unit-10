@@ -7,15 +7,19 @@ import { Link, useHistory } from 'react-router-dom';
 import Context from '../Context';
 
 export default function CourseDetail ({match}) {
+    // Instantiate context and history objects
     const context = useContext(Context.Context);
     let history = useHistory();
 
+    // Instantiate state for form elements and for errors
     const [courseData, setCourseData] = useState();
     const [isLoading, setIsLoading] = useState(true);
     let id = match.params.id;
 
     const apiHandler = new APIHandler();
 
+    // useEffect to pull courses data once component has mounted
+    // Update coursesData state with data that is pulled
     useEffect(() => {
         let mounted = true;
         apiHandler.getCourse(id)
@@ -34,6 +38,7 @@ export default function CourseDetail ({match}) {
         return () => mounted = false;
       }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Function to delete a course if a user is authenticated
     const onDelete = (e) => {
         e.preventDefault();
 
@@ -49,6 +54,9 @@ export default function CourseDetail ({match}) {
             })
     }
 
+    // Function to create course detail elements depending on if a user is authenticated
+    // If the page has loaded, the user is authenticated, and the username of the course creator is the same as the authenticated user's, then the user can select "Update Course", "Delete Course", or "Return to List"
+    // If a page has loaded and the user is not authenticated or is not the owner of a course, then they are only able to select "Return to List"
     const authenticatedUserPermissions = () => {
         if (!isLoading && context.authenticatedUser && courseData.User.emailAddress === context.authenticatedUser.emailAddress) {
                 return (<div className="wrap">

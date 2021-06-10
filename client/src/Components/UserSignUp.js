@@ -4,10 +4,11 @@ import ValidationErrors from './ValidationErrors';
 import Context from '../Context';
 
 export default function UserSignUp () {
-
+    // Instantiate context and history objects
     const context = useContext(Context.Context);
     let history = useHistory();
 
+    // Instantiate state for form elements and for errors
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [emailAddress, setEmailAddress] = useState('');
@@ -15,6 +16,7 @@ export default function UserSignUp () {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState([]);
 
+    // Function to handle form text updates
     const change = (e) => {
         const value = e.target.value;
         if (e.target.name === 'firstName') {
@@ -30,6 +32,9 @@ export default function UserSignUp () {
         }
     }
 
+    // Function to handle form submission
+    // Creates a user or provides validation errors depending on the inputs
+    // Links back to Courses homepage if successful
     const submit = (e) => {
         // Create user
         const user = {
@@ -66,6 +71,7 @@ export default function UserSignUp () {
             })
     }
 
+    // Function when "Cancel" button is clicked to return user to homepage
     const cancel = (e) => {
         e.preventDefault();
         history.push('/courses');

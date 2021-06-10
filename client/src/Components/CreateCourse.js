@@ -5,15 +5,19 @@ import ValidationErrors from './ValidationErrors';
 import Context from '../Context';
 
 export default function CreateCourse ({match, location}) {
+
+    // Instantiate context and history objects
     const context = useContext(Context.Context);
     const history = useHistory();
 
+    // Instantiate state for form elements and for errors
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [time, setTime] = useState('');
     const [materials, setMaterials] = useState('');
     const [errors, setErrors] = useState([]);
 
+    // Function to handle form text updates
     const change = (event) => {
         const value = event.target.value;
         if (event.target.name === 'courseTitle') {
@@ -27,6 +31,9 @@ export default function CreateCourse ({match, location}) {
         }
     }
 
+    // Function to handle form submission
+    // Creates a course or provides validation errors depending on the inputs
+    // Links back to Courses homepage if successful
     const submit = (event) => {
         event.preventDefault();
         const userId = context.authenticatedUser.id;
@@ -63,6 +70,7 @@ export default function CreateCourse ({match, location}) {
             })
     }
 
+    // Function when "Cancel" button is clicked to return user to homepage
     const cancel = (e) => {
         e.preventDefault();
         history.push('/courses');
