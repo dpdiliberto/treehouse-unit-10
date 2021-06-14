@@ -4,7 +4,7 @@ import Context from '../Context';
 
 export default function UserSignUp () {
 
-    // Instantiate context and history objects
+    // Instantiate context and history objects and state
     const context = useContext(Context.Context);
     let history = useHistory();
 
@@ -12,6 +12,7 @@ export default function UserSignUp () {
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState([]);
 
+    // Function to handle form text updates
     const change = (e) => {
         const value = e.target.value;
         if (e.target.name === 'emailAddress') {
@@ -21,6 +22,9 @@ export default function UserSignUp () {
         } 
     }
 
+    // Function to handle form submission
+    // Signs in a user or provides validation errors depending on the inputs
+    // Links back to Courses homepage if successful
     const submit = (e) => {
         // Create user
         const user = {
@@ -47,6 +51,7 @@ export default function UserSignUp () {
             })
     }
 
+    // Function when "Cancel" button is clicked to return user to homepage
     const cancel = (e) => {
         e.preventDefault();
         history.push('/courses');
