@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Context from '../Context';
 
-export default function UserSignUp () {
+export default function UserSignUp (location) {
 
     // Instantiate context and history objects and state
     const context = useContext(Context.Context);
@@ -26,6 +26,7 @@ export default function UserSignUp () {
     // Signs in a user or provides validation errors depending on the inputs
     // Links back to Courses homepage if successful
     const submit = (e) => {
+        const { from } = location.location.state || { from: { pathname: '/courses' } };
         // Create user
         const user = {
             emailAddress,
@@ -41,7 +42,7 @@ export default function UserSignUp () {
                 } else {
                     context.actions.signIn(emailAddress, password)
                         .then(() => {
-                            history.push('/courses');
+                            history.push(from);
                         });
                 }
             })

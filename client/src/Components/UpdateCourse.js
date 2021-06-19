@@ -1,22 +1,54 @@
-import React, { useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import { useHistory } from 'react-router-dom';
 
 import Context from '../Context';
 import ValidationErrors from './ValidationErrors';
+import APIHandler from '../APIHandler';
 
 export default function UpdateCourse ({match, location}) {
     // Instantiate context and history objects
     const context = useContext(Context.Context);
     const history = useHistory();
     let id = match.params.id;
-    
-    // Instantiate state for form elements and for errors. Set form elements to corresponding courseData value
-    let courseData = location.state.courseData;
-    const [title, setTitle] = useState(courseData.title);
-    const [description, setDescription] = useState(courseData.description);
-    const [time, setTime] = useState(courseData.estimatedTime);
-    const [materials, setMaterials] = useState(courseData.materialsNeeded);
+    const username = context.authenticatedUser.emailAddress;
+    const password = atob(context.authenticatedPassword);
+
+    const apiHandler = new APIHandler();
+
+    // useEffect to pull courses data once component has mounted
+    // Update coursesData state with data that is pulled
+    useEffect(() => {
+        apiHandler.getCourse(id)
+            .then(course => {
+                if (course) {
+                    setTitle(course.title);
+                    setDescription(course.description);
+                    setTime(course.time);
+                    setMaterials(course.materials);
+                    setCourseOwnerFirstName(course.User.firstName);
+                    setCourseOwnerLastName(course.User.lastName);
+
+                    if (username !== course.User.emailAddress) {
+                        history.push('/forbidden');
+                    }
+                } else {
+                    history.push('/notfound');
+                }
+            })
+            .catch(err => {
+                console.log('Error fetching and parsing data', err);
+                history.push('/error');
+            });
+      }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Instantiate state for form elements and for errors
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [time, setTime] = useState('');
+    const [materials, setMaterials] = useState('');
+    const [courseOwnerFirstName, setCourseOwnerFirstName] = useState('');
+    const [courseOwnerLastName, setCourseOwnerLastName] = useState('');
     const [errors, setErrors] = useState([]);
 
     // Function to handle form text updates
@@ -45,8 +77,8 @@ export default function UpdateCourse ({match, location}) {
             materialsNeeded: materials
         };
 
-        const username = context.authenticatedUser.emailAddress;
-        const password = atob(context.authenticatedPassword);
+        //const username = context.authenticatedUser.emailAddress;
+        //const password = atob(context.authenticatedPassword);
 
         context.apiHandler.updateCourse(id, body, username, password)
             .then( errs => {
@@ -76,32 +108,32 @@ export default function UpdateCourse ({match, location}) {
 
     return (
         <main>
-        <div className="wrap">
-            <h2>Update Course</h2>
-            {context.actions.validationErrorCheck(errors)}
-            <form onSubmit={submit}>
-                <div className="main--flex">
-                    <div>
-                        <label htmlFor="courseTitle">Course Title</label>
-                        <input id="courseTitle" name="courseTitle" type="text" value={title} onChange={change}/>
+          <div className="wrap">
+                <h2>Update Course</h2>
+                {context.actions.validationErrorCheck(errors)}
+                <form onSubmit={submit}>
+                    <div className="main--flex">
+                        <div>
+                            <label htmlFor="courseTitle">Course Title</label>
+                            <input id="courseTitle" name="courseTitle" type="text" value={title} onChange={change}/>
 
-                        <p>By Joe Smith</p>
+                            <p>By {courseOwnerFirstName} {courseOwnerLastName}</p>
 
-                        <label htmlFor="courseDescription">Course Description</label>
-                        <textarea id="courseDescription" name="courseDescription" onChange={change} value={description}></textarea>
+                            <label htmlFor="courseDescription">Course Description</label>
+                            <textarea id="courseDescription" name="courseDescription" onChange={change} value={description}></textarea>
+                        </div>
+                        <div>
+                            <label htmlFor="estimatedTime">Estimated Time</label>
+                            <input id="estimatedTime" name="estimatedTime" type="text" value={time || ''} onChange={change}/>
+
+                            <label htmlFor="materialsNeeded">Materials Needed</label>
+                            <textarea id="materialsNeeded" name="materialsNeeded" onChange={change} value={materials || ''}></textarea>
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor="estimatedTime">Estimated Time</label>
-                        <input id="estimatedTime" name="estimatedTime" type="text" value={time || ''} onChange={change}/>
-
-                        <label htmlFor="materialsNeeded">Materials Needed</label>
-                        <textarea id="materialsNeeded" name="materialsNeeded" onChange={change} value={materials || ''}></textarea>
-                    </div>
-                </div>
-                <button className="button" type="submit">Update Course</button>
-                <button className="button button-secondary" onClick={cancel}>Cancel</button>
-            </form>
-        </div>
-    </main>
+                    <button className="button" type="submit">Update Course</button>
+                    <button className="button button-secondary" onClick={cancel}>Cancel</button>
+                </form>
+            </div> 
+        </main>
     )
 }

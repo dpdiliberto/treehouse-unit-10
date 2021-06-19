@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import APIHandler from '../APIHandler';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import Course from './Course';
 import Context from '../Context';
@@ -8,6 +8,7 @@ import Context from '../Context';
 export default function CourseList () {
     // Instantiate context object
     const context = useContext(Context.Context);
+    const history = useHistory();
 
     // Instantiate state for coursesData
     const [coursesData, setCoursesData] = useState([]);
@@ -24,7 +25,10 @@ export default function CourseList () {
                     setCoursesData(courses)
                 }
             })
-            .catch(err => console.log('Error fetching and parsing data', err));
+            .catch(err => {
+                console.log('Error fetching and parsing data', err);
+                history.push('/error');
+            });
         
         return () => mounted = false;
       }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -41,14 +45,8 @@ export default function CourseList () {
     // Function to add a new course
     // Requires user parameter - if an authenticated user exists, then link to /courses/create. If not, then link to /signin
     const addNewCourse = (user) => {
-        let path;
-        if (user) {
-            path='/courses/create'
-        } else {
-            path='/signin'
-        }
             return (
-                <Link to={path}> 
+                <Link to={'/courses/create'}> 
                     <div className="course--module course--add--module" >
                         <span className="course--add--title">
                             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"

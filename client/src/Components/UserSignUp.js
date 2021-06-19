@@ -41,18 +41,13 @@ export default function UserSignUp () {
             firstName,
             lastName,
             emailAddress,
-            password
+            password,
+            confirmPassword
         };
         e.preventDefault();
-
-        context.apiHandler.createUser(user)
+///SET FULL FRONT END VALIDATIONS
+        context.apiHandler.createUser(user, errors)
             .then( errs => {
-                if (password !== confirmPassword) {
-                    errs.push('"Password" and "Confirm Password" must match');
-                }
-                if (password.length <= 8 || password.length >= 20) {
-                    errs.push("Please provide a password between 8 and 20 characters long.")
-                }
                 if(errs.length) {
                     console.log(errs);
                     setErrors(errs);

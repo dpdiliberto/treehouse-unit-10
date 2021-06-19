@@ -32,7 +32,10 @@ export default function CourseDetail ({match}) {
                     }
                 }
             })
-            .catch(err => console.log('Error fetching and parsing data', err))
+            .catch(err => {
+                console.log('Error fetching and parsing data', err);
+                history.push('/error');
+            })
             .finally(() => setIsLoading(false));
 
         return () => mounted = false;
@@ -91,7 +94,7 @@ export default function CourseDetail ({match}) {
             </div>
             {
                 isLoading
-                ? <p>Loading...</p>
+                ? <p></p>
                 :  
                 (<div className="wrap">
                     <h2>Course Detail</h2>

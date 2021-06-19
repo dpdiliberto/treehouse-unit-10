@@ -82,15 +82,40 @@ export default class APIHandler {
     // Function to make a "POST" request to a create a user
     // Requires a user object parameter
     async createUser(user) {
-        const response = await this.api('/users', 'POST', null, user);
-        if (response.status === 201) {
-            return [];
-        } else if (response.status === 400) {
-            return response.json().then(data => {
-                return data.errors;
-            })
+        let validationErrors = [];
+
+        // Adding front-end validation checks
+        if (user.firstName === '') {
+            validationErrors.push('Please provide a first name.');
+        }
+        if (!user.lastName) {
+            validationErrors.push('Please provide a last name.');
+        }
+        if (!user.emailAddress) {
+            validationErrors.push('Please provide an email address.');
+        }
+        if (!user.password || (user.password.length < 8 || user.password.length > 20)) {
+            validationErrors.push('Please provide a password between 8 and 20 characters long.');
+        }
+        if (user.password !== user.confirmPassword) {
+            validationErrors.push('"Password" and "Confirm Password" must match.');
+        };
+
+        // Check validation errors before making API call
+        if (validationErrors.length > 0) {
+            return validationErrors;
         } else {
-            throw new Error();
+            let response = await this.api('/users', 'POST', null, user);
+            if (response.status === 201) {
+                return [];
+            } else if (response.status === 400) {
+                return response.json().then(data => {
+                    console.log(data.errors);
+                    return data.errors;
+                })
+            } else {
+                throw new Error();
+            }
         }
     }
 
